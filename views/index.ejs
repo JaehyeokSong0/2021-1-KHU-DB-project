@@ -117,11 +117,22 @@
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
+                                    <div class="card-body">
+                                        <form class="form-inline" role="form" action="http://localhost:3000/pharms" method="POST">
+                                            <input type="text" name="time" id="timeplace" class="form-control input_text" placeholder="시간을 입력하세요">
+                                            <button type="button" class="btn btn-secondary" onclick="btn_now()">현재시각</button>
+                                            <button type="button submit" class="btn btn-success">검색</button>                                            <script type="text/javascript">
+                                                function btn_now() {
+                                                    var date = new Date().toLocaleString();
+                                                    var day = new Date().getDay();
+                                                    const WEEKDAY = ['sun','mon','tue','wed','thu','fri','sat','sun'];
+                                                    var time = date.split(' ');
+                                                    document.getElementById("timeplace").value = WEEKDAY[day] + time[4];
+                                                }
+                                            </script>
+                                        </form>
+                                    </div>                     
+                                   </div>
                                 </div>
                             </div>
                         </div>

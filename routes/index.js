@@ -1,6 +1,8 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var db = require('../db/query');
+var dbConnection = require('../db/connection');
+const { rawListeners } = require('../db/connection');
 
 /* GET home page. 
 router.get('/', function(req, res, next) {
@@ -14,37 +16,17 @@ router.get('/',function(req,res) {
   });
 });
 
-router.get('/pharms_time',function(req,res) {
-  var queryString = 'SELECT * from pharm_time';
-  dbConnection.query(queryString, (error,rows) => {
+router.post('/pharms/',function(req,res) {
+  var time = req.body.time;
+  var day = time.substr(0,3);
+  var querytime = time.substr(3,time.length-3);
+  var queryday = "time_" + day; // ex) time_mon
+  console.log(querytime," , ",queryday);
+  var queryString = 'SELECT * FROM pharm_time WHERE ? >= SUBSTRING_INDEX(?,"~",1) and ? <= SUBSTRING_INDEX(?,"~",2)';  
+  dbConnection.query(queryString, [querytime,queryday,querytime,queryday], (error,rows) => {
     if(error) throw error;
     res.send(rows);
-  });
-});
-
-router.get('/pharms/:tel',function(req,res) {
-  var tel = req.params.tel;
-  var queryString = 'SELECT * FROM pharm WHERE tel=?';
-  dbConnection.query(queryString, [tel], (error,rows) => {
-    if(error) throw error;
-    /*var result = {
-      "name" : name,
-      "tel" : tel,
-      "addr_street" : addr_street,
-      "addr_lot" : addr_lot,
-      "time_mon" : time_mon,
-      "time_tue" : time_tue,
-      "time_wed" : time_wed,
-      "time_thu" : time_thu,
-      "time_fri" : time_fri,
-      "time_sat" : time_sat,
-      "time_sun" : time_sun,
-      "time_hol" : time_hol,
-    }
-    res.send(ejs.render(data, {
-      data:result
-    }))*/
-    res.send(rows);
+    //res.render('index', {rows:rows});
   });
 });
 //TEST CODE END
