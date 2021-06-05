@@ -1,14 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var dbConnection = require('../db/connection.js');
+var db = require('../db/query');
 
-/* GET home page. */
+/* GET home page. 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
+});*/
+
+// TEST CODE START
+router.get('/',function(req,res) {
+  db.getPharmsInfo((rows) => {
+    res.render('index', {rows:rows});
+  });
 });
 
-router.get('/pharms',function(req,res) {
-  var queryString = 'SELECT * from pharm';
+router.get('/pharms_time',function(req,res) {
+  var queryString = 'SELECT * from pharm_time';
   dbConnection.query(queryString, (error,rows) => {
     if(error) throw error;
     res.send(rows);
@@ -20,7 +27,7 @@ router.get('/pharms/:tel',function(req,res) {
   var queryString = 'SELECT * FROM pharm WHERE tel=?';
   dbConnection.query(queryString, [tel], (error,rows) => {
     if(error) throw error;
-    var result = {
+    /*var result = {
       "name" : name,
       "tel" : tel,
       "addr_street" : addr_street,
@@ -36,8 +43,10 @@ router.get('/pharms/:tel',function(req,res) {
     }
     res.send(ejs.render(data, {
       data:result
-    }))
+    }))*/
+    res.send(rows);
   });
 });
+//TEST CODE END
 
 module.exports = router;
