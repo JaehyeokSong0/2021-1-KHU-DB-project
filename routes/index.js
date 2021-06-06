@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router({mergeParams: true});
 var db = require('../db/query');
 var dbConnection = require('../db/connection');
-const { rawListeners } = require('../db/connection');
+var mysql = require('mysql');
 
 /* GET home page. 
 router.get('/', function(req, res, next) {
@@ -19,14 +19,23 @@ router.get('/',function(req,res) {
 router.post('/pharms/',function(req,res) {
   var time = req.body.time;
   var day = time.substr(0,3);
-  var querytime = time.substr(3,time.length-3);
+  var querytime = time.substr(3,time.length-6).replace(":","");
   var queryday = "time_" + day; // ex) time_mon
-  console.log(querytime," , ",queryday);
-  var queryString = 'SELECT * FROM pharm_time WHERE ? >= SUBSTRING_INDEX(?,"~",1) and ? <= SUBSTRING_INDEX(?,"~",2)';  
-  dbConnection.query(queryString, [querytime,queryday,querytime,queryday], (error,rows) => {
+  var queryString = `SELECT * FROM pharm_time WHERE ? BETWEEN SUBSTRING_INDEX(${queryday},"~",1) and SUBSTRING_INDEX(${queryday},"~",-1)`;  
+  queryString = mysql.format(queryString, [querytime]);
+  dbConnection.query(queryString, (error,rows) => {
     if(error) throw error;
-    res.send(rows);
-    //res.render('index', {rows:rows});
+    res.render('index_result',{rows:rows,day:day});
+  });
+});
+
+router.post('/detail/',function(req,res) {
+  var tel = req.body.tel;
+  var queryString = `SELECT * FROM pharm_info WHERE tel = ?`;  
+  queryString = mysql.format(queryString, [tel]);
+  dbConnection.query(queryString, (error,rows) => {
+    if(error) throw error;
+    res.render('index',{rows:rows});
   });
 });
 //TEST CODE END

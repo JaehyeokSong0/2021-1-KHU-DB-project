@@ -1,0 +1,37 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        검색 결과
+    </div>
+    <div class="card-body">
+        <table id="datatablesSimple">
+            <thead>
+                <% 
+                var week_dict = {sun:'일요일',mon:'월요일',tue:'화요일',wed:'수요일',thu:'목요일',fri:'금요일',sat:'토요일'};
+                var time_day = "time_" + day;
+                var time_day_kor = week_dict[day];
+                %>
+                <tr>
+                    <th>상세보기</th>
+                    <th>
+                        <%= time_day_kor %>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% rows.forEach((row, index)=> { %> 
+                <tr>
+                    <td>
+                        <form action="/detail" method="POST">
+                            <button type="button submit" class="btn btn-secondary">상세보기</button>
+                            <input type="hidden" name="tel" value="<%= row.tel %>">
+                        </form>
+                    </td>
+                    <td>
+                        <%= row[time_day] %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
