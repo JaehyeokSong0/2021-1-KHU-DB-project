@@ -4,12 +4,6 @@ var db = require('../db/query');
 var dbConnection = require('../db/connection');
 var mysql = require('mysql');
 
-/* GET home page. 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});*/
-
-// TEST CODE START
 router.get('/',function(req,res) {
   db.getPharmsInfo((rows) => {
     res.render('index', {rows:rows});
@@ -38,6 +32,5 @@ router.post('/detail/',function(req,res) {
     res.render('index',{rows:rows});
   });
 });
-//TEST CODE END
 
 module.exports = router;
